@@ -39,7 +39,7 @@ public class NovaFigurinhaNoAlbumController {
         repository.flush();
 
         URI location = uriBuilder
-                    .path("/api/albuns/{albumId}/musicas/{figurinhaId}")
+                    .path("/api/albuns/{albumId}/figurinhas/{figurinhaId}")
                     .buildAndExpand(album.getId(), figurinha.getId())
                     .toUri();
 

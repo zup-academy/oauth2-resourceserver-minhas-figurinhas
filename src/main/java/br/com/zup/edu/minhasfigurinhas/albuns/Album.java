@@ -2,6 +2,7 @@ package br.com.zup.edu.minhasfigurinhas.albuns;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -56,6 +57,15 @@ public class Album {
     public void adiciona(Figurinha figurinha) {
         figurinha.setAlbum(this);
         this.figurinhas.add(figurinha);
+    }
+
+    /**
+     * Adiciona novas figurinhas ao album
+     */
+    public void adiciona(Figurinha...figurinhas) {
+        Arrays.stream(figurinhas).forEach(figurinha -> {
+            adiciona(figurinha);
+        });
     }
 
 }

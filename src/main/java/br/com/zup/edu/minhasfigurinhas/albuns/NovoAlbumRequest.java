@@ -25,6 +25,18 @@ public class NovoAlbumRequest {
         this.figurinhas = figurinhas;
     }
 
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public List<NovaFigurinhaRequest> getFigurinhas() {
+        return figurinhas;
+    }
+
     public Album toModel() {
         Album album = new Album(titulo, descricao, "anonymous");
         figurinhas.forEach(f -> {

@@ -17,6 +17,11 @@ public class NovaFigurinhaNoAlbumRequest {
     @NotNull
     private String enderecoDaImagem;
 
+    public NovaFigurinhaNoAlbumRequest(String descricao, String enderecoDaImagem) {
+        this.descricao = descricao;
+        this.enderecoDaImagem = enderecoDaImagem;
+    }
+
     public String getDescricao() {
         return descricao;
     }
