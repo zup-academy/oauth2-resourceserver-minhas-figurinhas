@@ -17,33 +17,32 @@ class NovaFigurinhaNoAlbumControllerTest extends SpringBootIntegrationTest {
     @Autowired
     private AlbumRepository repository;
 
+    private static Album ALBUM;
+
     @BeforeEach
     private void setUp() {
         repository.deleteAll();
+        this.ALBUM = new Album("DBZ", "Album do DBZ", "rafael.ponte");
+        ALBUM.adiciona(
+                new Figurinha("picollo", "http://animes.com/dbz/picollo.jpg")
+        );
+        repository.save(ALBUM);
     }
 
     @Test
     public void deveAdicionarNovaFigurinhaNoAlbum() throws Exception {
         // cenario
-        Album album = new Album("DBZ", "Album do DBZ", "rafael.ponte");
-        album.adiciona(
-            new Figurinha("picollo", "http://animes.com/dbz/picollo.jpg")
-        );
-        repository.save(album);
-
         NovaFigurinhaNoAlbumRequest novaFigurinha
                 = new NovaFigurinhaNoAlbumRequest("gohan", "http://animes.com/dbz/gohan.jpg");
 
         // ação
-        String uri = "/api/albuns/{albumId}/figurinhas"
-                .replace("{albumId}", album.getId().toString());
-        mockMvc.perform(POST(uri, novaFigurinha))
+        mockMvc.perform(POST(uri(ALBUM.getId()), novaFigurinha))
                 .andExpect(status().isCreated())
                 .andExpect(redirectedUrlPattern("**/api/albuns/*/figurinhas/**"))
         ;
 
         // validação
-        Album encontrado = repository.findByIdWithFigurinhas(album.getId());
+        Album encontrado = repository.findByIdWithFigurinhas(ALBUM.getId());
         assertThat(encontrado.getFigurinhas())
                 .hasSize(2)
                 .extracting("descricao")
@@ -58,9 +57,7 @@ class NovaFigurinhaNoAlbumControllerTest extends SpringBootIntegrationTest {
                 = new NovaFigurinhaNoAlbumRequest("gohan", "http://animes.com/dbz/gohan.jpg");
 
         // ação
-        String uri = "/api/albuns/{albumId}/figurinhas"
-                .replace("{albumId}", "-2022");
-        mockMvc.perform(POST(uri, figurinhaInvalida))
+        mockMvc.perform(POST(uri(-2022L), figurinhaInvalida))
                 .andExpect(status().isNotFound())
                 .andExpect(status().reason("album não encontrado"))
         ;
@@ -69,24 +66,16 @@ class NovaFigurinhaNoAlbumControllerTest extends SpringBootIntegrationTest {
     @Test
     public void naoDeveAdicionarNovaFigurinhaNoAlbum_quandoParametrosInvalidos() throws Exception {
         // cenario
-        Album album = new Album("DBZ", "Album do DBZ", "rafael.ponte");
-        album.adiciona(
-                new Figurinha("picollo", "http://animes.com/dbz/picollo.jpg")
-        );
-        repository.save(album);
-
         NovaFigurinhaNoAlbumRequest figurinhaInvalida
                 = new NovaFigurinhaNoAlbumRequest("", "");
 
         // ação
-        String uri = "/api/albuns/{albumId}/figurinhas"
-                .replace("{albumId}", album.getId().toString());
-        mockMvc.perform(POST(uri, figurinhaInvalida))
+        mockMvc.perform(POST(uri(ALBUM.getId()), figurinhaInvalida))
                 .andExpect(status().isBadRequest())
         ;
 
         // validação
-        Album encontrado = repository.findByIdWithFigurinhas(album.getId());
+        Album encontrado = repository.findByIdWithFigurinhas(ALBUM.getId());
         assertThat(encontrado.getFigurinhas())
                 .hasSize(1)
                 .extracting("descricao")
@@ -94,5 +83,10 @@ class NovaFigurinhaNoAlbumControllerTest extends SpringBootIntegrationTest {
         ;
     }
 
+    private String uri(Long albumId) {
+        String uri = "/api/albuns/{albumId}/figurinhas"
+                .replace("{albumId}", albumId.toString());
+        return uri;
+    }
 
 }
