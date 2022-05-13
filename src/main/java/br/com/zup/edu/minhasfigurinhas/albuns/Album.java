@@ -1,6 +1,7 @@
 package br.com.zup.edu.minhasfigurinhas.albuns;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +15,9 @@ public class Album {
 
     private String titulo;
     private String descricao;
+
+    @NotBlank
+    @Column(nullable = false, updatable = false)
     private String dono;
 
     @OneToMany(
