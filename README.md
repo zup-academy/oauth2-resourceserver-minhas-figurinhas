@@ -3,7 +3,7 @@
 Projeto backend de uma API REST para gerencimento de Album de Figurinhas. Este projeto é utilizado no módulo de segurança com Spring Security e OAuth2, servindo como Resource Server para a atividade.
 
 ### Atenção:
-> Branch com Spring Security OAuth2 Resource Server configurado, porém com testes de integração **quebrando com HTTP Status Code 401/403 propositalmente**.
+> Branch com Spring Security OAuth2 Resource Server configurado e testes de integração **corrigidos** para enviar Access Token em cada requisiçao.
 
 ## Tecnologias utilizadas:
 
