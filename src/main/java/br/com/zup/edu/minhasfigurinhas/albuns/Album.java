@@ -72,4 +72,10 @@ public class Album {
         });
     }
 
+    /**
+     * Verifica se album pertence a determinado dono (usuário)
+     */
+    public boolean pertenceAo(String outroDono) {
+        return this.dono.equals(outroDono);
+    }
 }
