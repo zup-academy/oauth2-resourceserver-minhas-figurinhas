@@ -134,7 +134,7 @@ class NovaFigurinhaNoAlbumControllerTest extends SpringBootIntegrationTest {
     }
 
     @Test
-    public void deveAdicionarNovaFigurinhaNoAlbum_quandoAccessTokenNaoEnviado() throws Exception {
+    public void naoDeveAdicionarNovaFigurinhaNoAlbum_quandoAccessTokenNaoEnviado() throws Exception {
         // cenario
         NovaFigurinhaNoAlbumRequest novaFigurinha
                 = new NovaFigurinhaNoAlbumRequest("gohan", "http://animes.com/dbz/gohan.jpg");
@@ -146,7 +146,7 @@ class NovaFigurinhaNoAlbumControllerTest extends SpringBootIntegrationTest {
     }
 
     @Test
-    public void deveAdicionarNovaFigurinhaNoAlbum_quandoAccessTokenNaoPossuiScopeApropriado() throws Exception {
+    public void naoDeveAdicionarNovaFigurinhaNoAlbum_quandoAccessTokenNaoPossuiScopeApropriado() throws Exception {
         // cenario
         NovaFigurinhaNoAlbumRequest novaFigurinha
                 = new NovaFigurinhaNoAlbumRequest("gohan", "http://animes.com/dbz/gohan.jpg");
