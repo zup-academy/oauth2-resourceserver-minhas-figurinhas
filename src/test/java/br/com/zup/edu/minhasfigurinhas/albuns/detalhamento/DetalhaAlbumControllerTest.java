@@ -7,8 +7,10 @@ import br.com.zup.edu.minhasfigurinhas.albuns.Figurinha;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,7 +35,10 @@ class DetalhaAlbumControllerTest extends SpringBootIntegrationTest {
         repository.save(album);
 
         // ação e validação
-        mockMvc.perform(GET("/api/albuns/{id}", album.getId()))
+        mockMvc.perform(GET("/api/albuns/{id}", album.getId())
+                        .with(jwt()
+                                .authorities(new SimpleGrantedAuthority("SCOPE_albuns:read"))
+                        ))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(album.getId()))
                 .andExpect(jsonPath("$.titulo").value(album.getTitulo()))
@@ -60,10 +65,46 @@ class DetalhaAlbumControllerTest extends SpringBootIntegrationTest {
         repository.save(album);
 
         // ação e validação
-        mockMvc.perform(GET("/api/albuns/{id}", -9999))
+        mockMvc.perform(GET("/api/albuns/{id}", -9999)
+                        .with(jwt()
+                                .authorities(new SimpleGrantedAuthority("SCOPE_albuns:read"))
+                        ))
                 .andExpect(status().isNotFound())
                 .andExpect(status().reason("album não encontrado"))
                 .andExpect(jsonPath("$").doesNotExist())
+        ;
+    }
+
+    @Test
+    public void naoDeveDetalharAlbumComSuasFigurinhas_quandoAccessTokenNaoEnviado() throws Exception {
+        // cenario
+        Album album = new Album("DBZ", "Album do DBZ", "rafael.ponte");
+        album.adiciona(
+                new Figurinha("goku", "http://animes.com/dbz/goku.jpg"),
+                new Figurinha("picollo", "http://animes.com/dbz/picollo.jpg")
+        );
+        repository.save(album);
+
+        // ação e validação
+        mockMvc.perform(GET("/api/albuns/{id}", album.getId()))
+                .andExpect(status().isUnauthorized())
+                ;
+    }
+
+    @Test
+    public void naoDeveDetalharAlbumComSuasFigurinhas_quandoAccessTokenNaoPossuiScopeApropriado() throws Exception {
+        // cenario
+        Album album = new Album("DBZ", "Album do DBZ", "rafael.ponte");
+        album.adiciona(
+                new Figurinha("goku", "http://animes.com/dbz/goku.jpg"),
+                new Figurinha("picollo", "http://animes.com/dbz/picollo.jpg")
+        );
+        repository.save(album);
+
+        // ação e validação
+        mockMvc.perform(GET("/api/albuns/{id}", album.getId())
+                    .with(jwt()))
+                .andExpect(status().isForbidden())
         ;
     }
 }
