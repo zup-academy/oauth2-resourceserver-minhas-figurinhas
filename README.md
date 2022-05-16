@@ -94,14 +94,14 @@ curl --request POST \
 ```shell
 curl --request GET \
   --url http://localhost:8080/oauth2-resourceserver-minhas-figurinhas/api/albuns/1 \
-  --header 'Authorization: Bearer <access_token>' \
+  --header 'Authorization: Bearer <access_token>'
 ```
 
 ### Listando todos os albuns
 ```shell
 curl --request GET \
   --url http://localhost:8080/oauth2-resourceserver-minhas-figurinhas/api/albuns \
-  --header 'Authorization: Bearer <access_token>' \
+  --header 'Authorization: Bearer <access_token>'
 ```
 
 ## Duvidas e suporte
